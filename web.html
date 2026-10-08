@@ -1,0 +1,1957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StayEase - Hotel & Food Booking</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f5f7fb;
+    color:#222;
+    transition:.3s;
+}
+
+body.dark{
+    background:#121212;
+    color:#eee;
+}
+
+header{
+    background:linear-gradient(135deg,#4f46e5,#7c3aed);
+    color:white;
+    padding:16px 5%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:sticky;
+    top:0;
+    z-index:100;
+}
+
+.logo{
+    font-size:25px;
+    font-weight:bold;
+}
+
+nav button{
+    border:0;
+    background:transparent;
+    color:white;
+    margin:5px;
+    cursor:pointer;
+    font-size:14px;
+}
+
+.container{
+    width:90%;
+    max-width:1200px;
+    margin:auto;
+}
+
+.hero{
+    padding:80px 20px;
+    text-align:center;
+    color:white;
+    background:
+    linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
+    url("https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1600&q=80")
+    center/cover;
+}
+
+.hero h1{
+    font-size:46px;
+    margin-bottom:15px;
+}
+
+.hero p{
+    font-size:18px;
+}
+
+.search-box{
+    background:white;
+    color:#222;
+    padding:20px;
+    border-radius:12px;
+    margin:30px auto 0;
+    max-width:950px;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+}
+
+input,select{
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:7px;
+    width:100%;
+}
+
+.btn{
+    background:#4f46e5;
+    color:white;
+    border:0;
+    padding:11px 17px;
+    border-radius:7px;
+    cursor:pointer;
+}
+
+.btn:hover{
+    background:#3730a3;
+}
+
+.section{
+    padding:45px 0;
+}
+
+.section h2{
+    margin-bottom:25px;
+}
+
+.room-grid,
+.food-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:22px;
+}
+
+.room,
+.food-card,
+.card{
+    background:white;
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 5px 18px rgba(0,0,0,.08);
+}
+
+.dark .room,
+.dark .food-card,
+.dark .card,
+.dark .modal-box,
+.dark .search-box{
+    background:#1e1e1e;
+    color:white;
+}
+
+.room img,
+.food-card img{
+    width:100%;
+    height:190px;
+    object-fit:cover;
+}
+
+.room-content,
+.food-content{
+    padding:18px;
+}
+
+.price{
+    font-size:20px;
+    color:#4f46e5;
+    font-weight:bold;
+    margin:10px 0;
+}
+
+.rating{
+    color:#f59e0b;
+}
+
+.favorite{
+    float:right;
+    font-size:24px;
+    cursor:pointer;
+}
+
+.filters{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:25px;
+}
+
+.filters button{
+    border:0;
+    padding:10px 17px;
+    border-radius:20px;
+    cursor:pointer;
+    background:#ddd;
+}
+
+.card{
+    padding:20px;
+    margin-bottom:15px;
+}
+
+.dashboard{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+    gap:20px;
+}
+
+.stat{
+    background:linear-gradient(135deg,#4f46e5,#7c3aed);
+    color:white;
+    padding:25px;
+    border-radius:12px;
+}
+
+.stat h3{
+    font-size:30px;
+}
+
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.7);
+    z-index:500;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+
+.modal-box{
+    background:white;
+    color:#222;
+    width:100%;
+    max-width:500px;
+    padding:25px;
+    border-radius:12px;
+    max-height:90vh;
+    overflow:auto;
+}
+
+.close{
+    float:right;
+    font-size:25px;
+    cursor:pointer;
+}
+
+.modal-box input,
+.modal-box select{
+    margin:8px 0 15px;
+}
+
+.hidden{
+    display:none!important;
+}
+
+.status{
+    display:inline-block;
+    padding:5px 10px;
+    background:#dcfce7;
+    color:#166534;
+    border-radius:15px;
+}
+
+footer{
+    background:#111827;
+    color:white;
+    text-align:center;
+    padding:30px;
+    margin-top:50px;
+}
+
+.toast{
+    position:fixed;
+    right:20px;
+    bottom:20px;
+    background:#111827;
+    color:white;
+    padding:15px 20px;
+    border-radius:8px;
+    display:none;
+    z-index:1000;
+}
+
+@media(max-width:700px){
+
+    header{
+        flex-direction:column;
+        gap:10px;
+    }
+
+    .hero h1{
+        font-size:32px;
+    }
+
+    .search-box{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">🏨 StayEase</div>
+
+<nav>
+<button onclick="showSection('home')">Home</button>
+<button onclick="showSection('rooms')">Rooms</button>
+<button onclick="showSection('food')">Food</button>
+<button onclick="showSection('bookings')">Bookings</button>
+<button onclick="showSection('profile')">Profile</button>
+<button onclick="showSection('admin')">Admin</button>
+<button onclick="toggleDark()">🌙</button>
+<button id="authButton" onclick="openLogin()">Login</button>
+</nav>
+
+</header>
+
+
+<!-- HOME -->
+
+<section id="home">
+
+<div class="hero">
+
+<h1>Find Your Perfect Stay</h1>
+
+<p>Book luxury rooms and order delicious food.</p>
+
+<div class="search-box">
+
+<input id="search"
+placeholder="Search hotel or location">
+
+<input type="date" id="homeCheckIn">
+
+<input type="date" id="homeCheckOut">
+
+<button class="btn" onclick="searchRooms()">
+🔎 Search
+</button>
+
+</div>
+
+</div>
+
+<div class="container section">
+
+<h2>⭐ Popular Rooms</h2>
+
+<div class="room-grid" id="homeRooms"></div>
+
+</div>
+
+<div class="container section">
+
+<h2>🍽️ Popular Food</h2>
+
+<div class="food-grid" id="homeFood"></div>
+
+</div>
+
+</section>
+
+
+<!-- ROOMS -->
+
+<section id="rooms" class="hidden">
+
+<div class="container section">
+
+<h2>🏨 Hotel Rooms</h2>
+
+<div class="filters">
+
+<button onclick="filterRooms('All')">All</button>
+<button onclick="filterRooms('Single')">Single</button>
+<button onclick="filterRooms('Double')">Double</button>
+<button onclick="filterRooms('Deluxe')">Deluxe</button>
+<button onclick="filterRooms('Suite')">Suite</button>
+
+</div>
+
+<div class="room-grid" id="roomList"></div>
+
+</div>
+
+</section>
+
+
+<!-- FOOD -->
+
+<section id="food" class="hidden">
+
+<div class="container section">
+
+<h2>🍔 Food Menu</h2>
+
+<div class="filters">
+
+<button onclick="filterFood('All')">All</button>
+<button onclick="filterFood('Main Course')">Main Course</button>
+<button onclick="filterFood('Fast Food')">Fast Food</button>
+<button onclick="filterFood('Dessert')">Dessert</button>
+<button onclick="filterFood('Drinks')">Drinks</button>
+
+</div>
+
+<div class="food-grid" id="foodList"></div>
+
+</div>
+
+</section>
+
+
+<!-- BOOKINGS -->
+
+<section id="bookings" class="hidden">
+
+<div class="container section">
+
+<h2>📋 My Bookings</h2>
+
+<div id="bookingList"></div>
+
+<h2>🍽️ My Food Orders</h2>
+
+<div id="orderList"></div>
+
+</div>
+
+</section>
+
+
+<!-- PROFILE -->
+
+<section id="profile" class="hidden">
+
+<div class="container section">
+
+<h2>👤 My Profile</h2>
+
+<div class="card">
+
+<h3 id="profileName">Guest</h3>
+
+<p id="profileEmail"></p>
+
+<br>
+
+<button class="btn" onclick="logout()">Logout</button>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ADMIN -->
+
+<section id="admin" class="hidden">
+
+<div class="container section">
+
+<h2>📊 Admin Dashboard</h2>
+
+<div class="dashboard">
+
+<div class="stat">
+<p>Total Rooms</p>
+<h3 id="totalRooms">0</h3>
+</div>
+
+<div class="stat">
+<p>Total Users</p>
+<h3 id="totalUsers">0</h3>
+</div>
+
+<div class="stat">
+<p>Total Bookings</p>
+<h3 id="totalBookings">0</h3>
+</div>
+
+<div class="stat">
+<p>Food Orders</p>
+<h3 id="totalOrders">0</h3>
+</div>
+
+<div class="stat">
+<p>Revenue</p>
+<h3>₹<span id="revenue">0</span></h3>
+</div>
+
+</div>
+
+<br>
+
+<h3>Recent Bookings</h3>
+
+<div id="adminBookings"></div>
+
+</div>
+
+</section>
+
+
+<!-- LOGIN -->
+
+<div class="modal" id="loginModal">
+
+<div class="modal-box">
+
+<span class="close"
+onclick="closeModal('loginModal')">×</span>
+
+<h2>🔐 Login</h2>
+
+<br>
+
+<input id="loginEmail"
+placeholder="Email"
+type="email">
+
+<input id="loginPassword"
+placeholder="Password"
+type="password">
+
+<button class="btn"
+onclick="login()">
+Login
+</button>
+
+<br><br>
+
+<p>
+Don't have an account?
+<button class="btn"
+onclick="switchSignup()">
+Sign Up
+</button>
+</p>
+
+</div>
+
+</div>
+
+
+<!-- SIGNUP -->
+
+<div class="modal" id="signupModal">
+
+<div class="modal-box">
+
+<span class="close"
+onclick="closeModal('signupModal')">×</span>
+
+<h2>📝 Create Account</h2>
+
+<br>
+
+<input id="signupName"
+placeholder="Full Name">
+
+<input id="signupEmail"
+placeholder="Email"
+type="email">
+
+<input id="signupPassword"
+placeholder="Password"
+type="password">
+
+<button class="btn"
+onclick="signup()">
+Create Account
+</button>
+
+</div>
+
+</div>
+
+
+<!-- BOOKING -->
+
+<div class="modal" id="bookingModal">
+
+<div class="modal-box">
+
+<span class="close"
+onclick="closeModal('bookingModal')">×</span>
+
+<h2>🏨 Book Room</h2>
+
+<br>
+
+<h3 id="selectedRoom"></h3>
+
+<br>
+
+<label>Check-in</label>
+<input type="date" id="bookingCheckIn">
+
+<label>Check-out</label>
+<input type="date" id="bookingCheckOut">
+
+<label>Guests</label>
+
+<select id="guests">
+<option>1</option>
+<option>2</option>
+<option>3</option>
+<option>4</option>
+<option>5</option>
+</select>
+
+<h3>
+Total: ₹<span id="bookingTotal">0</span>
+</h3>
+
+<br>
+
+<button class="btn"
+onclick="confirmBooking()">
+💳 Confirm Booking
+</button>
+
+</div>
+
+</div>
+
+
+<!-- CART -->
+
+<div class="modal" id="cartModal">
+
+<div class="modal-box">
+
+<span class="close"
+onclick="closeModal('cartModal')">×</span>
+
+<h2>🛒 Food Cart</h2>
+
+<br>
+
+<div id="cartItems"></div>
+
+<h2>
+Total: ₹<span id="cartTotal">0</span>
+</h2>
+
+<br>
+
+<button class="btn"
+onclick="placeFoodOrder()">
+💳 Place Food Order
+</button>
+
+</div>
+
+</div>
+
+
+<div class="toast" id="toast"></div>
+
+
+<footer>
+
+<p>© 2026 StayEase Hotel & Food Booking</p>
+
+<p>Made for Web Technology Project</p>
+
+</footer>
+
+
+<script>
+
+/* =========================
+   DATA
+========================= */
+
+const rooms = [
+
+{
+id:1,
+name:"Deluxe King Room",
+type:"Deluxe",
+price:4500,
+rating:4.8,
+location:"Chennai",
+image:"https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=900&q=80"
+},
+
+{
+id:2,
+name:"Luxury Suite",
+type:"Suite",
+price:7500,
+rating:4.9,
+location:"Bangalore",
+image:"https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=900&q=80"
+},
+
+{
+id:3,
+name:"Standard Double Room",
+type:"Double",
+price:3200,
+rating:4.5,
+location:"Hyderabad",
+image:"https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=900&q=80"
+},
+
+{
+id:4,
+name:"Single Comfort Room",
+type:"Single",
+price:2200,
+rating:4.3,
+location:"Mumbai",
+image:"https://images.unsplash.com/photo-1591088398332-8a7791972843?auto=format&fit=crop&w=900&q=80"
+},
+
+{
+id:5,
+name:"Premium Suite",
+type:"Suite",
+price:9000,
+rating:5.0,
+location:"Goa",
+image:"https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=900&q=80"
+},
+
+{
+id:6,
+name:"Executive Double",
+type:"Double",
+price:3800,
+rating:4.6,
+location:"Delhi",
+image:"https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&w=900&q=80"
+}
+
+];
+
+
+const food = [
+
+{
+id:1,
+name:"Chicken Biryani",
+category:"Main Course",
+price:250,
+rating:4.8,
+image:"https://images.unsplash.com/photo-1563379091339-03246963d51a?auto=format&fit=crop&w=900&q=80"
+},
+
+{
+id:2,
+name:"Butter Chicken",
+category:"Main Course",
+price:320,
+rating:4.7,
+image:"https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=900&q=80"
+},
+
+{
+id:3,
+name:"Chicken Burger",
+category:"Fast Food",
+price:199,
+rating:4.5,
+image:"https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=900&q=80"
+},
+
+{
+id:4,
+name:"Margherita Pizza",
+category:"Fast Food",
+price:299,
+rating:4.6,
+image:"https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=900&q=80"
+},
+
+{
+id:5,
+name:"French Fries",
+category:"Fast Food",
+price:129,
+rating:4.3,
+image:"https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=900&q=80"
+},
+
+{
+id:6,
+name:"Chocolate Cake",
+category:"Dessert",
+price:179,
+rating:4.9,
+image:"https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=900&q=80"
+},
+
+{
+id:7,
+name:"Ice Cream",
+category:"Dessert",
+price:119,
+rating:4.5,
+image:"https://images.unsplash.com/photo-1501443762994-82bd5dace89a?auto=format&fit=crop&w=900&q=80"
+},
+
+{
+id:8,
+name:"Mango Juice",
+category:"Drinks",
+price:89,
+rating:4.4,
+image:"https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=900&q=80"
+}
+
+];
+
+
+/* =========================
+   LOCAL STORAGE
+========================= */
+
+let users =
+JSON.parse(localStorage.getItem("stayUsers")) || [];
+
+let currentUser =
+JSON.parse(localStorage.getItem("stayCurrentUser")) || null;
+
+let bookings =
+JSON.parse(localStorage.getItem("stayBookings")) || [];
+
+let foodOrders =
+JSON.parse(localStorage.getItem("stayFoodOrders")) || [];
+
+let favorites =
+JSON.parse(localStorage.getItem("stayFavorites")) || [];
+
+let cart =
+JSON.parse(localStorage.getItem("stayCart")) || [];
+
+let selectedRoom = null;
+
+
+/* =========================
+   INITIALIZE
+========================= */
+
+function initialize(){
+
+renderRooms(rooms);
+
+renderHomeRooms();
+
+renderFood(food);
+
+renderHomeFood();
+
+updateAuth();
+
+updateProfile();
+
+updateAdmin();
+
+setDates();
+
+}
+
+
+/* =========================
+   DATES
+========================= */
+
+function setDates(){
+
+let today=new Date();
+
+let tomorrow=new Date();
+
+tomorrow.setDate(today.getDate()+1);
+
+let t=today.toISOString().split("T")[0];
+
+let tm=tomorrow.toISOString().split("T")[0];
+
+document.getElementById("homeCheckIn").value=t;
+
+document.getElementById("homeCheckOut").value=tm;
+
+}
+
+
+/* =========================
+   ROOM DISPLAY
+========================= */
+
+function renderRooms(list){
+
+let container=document.getElementById("roomList");
+
+container.innerHTML="";
+
+list.forEach(room=>{
+
+let fav=favorites.includes(room.id)?"❤️":"♡";
+
+container.innerHTML+=`
+
+<div class="room">
+
+<img src="${room.image}">
+
+<div class="room-content">
+
+<span class="favorite"
+onclick="toggleFavorite(${room.id})">
+${fav}
+</span>
+
+<h3>${room.name}</h3>
+
+<p>📍 ${room.location}</p>
+
+<p>${room.type} Room</p>
+
+<p class="rating">
+⭐ ${room.rating}
+</p>
+
+<p class="price">
+₹${room.price.toLocaleString()}/night
+</p>
+
+<button class="btn"
+onclick="openBooking(${room.id})">
+Book Now
+</button>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+}
+
+
+function renderHomeRooms(){
+
+let container=document.getElementById("homeRooms");
+
+container.innerHTML="";
+
+rooms.slice(0,4).forEach(room=>{
+
+container.innerHTML+=`
+
+<div class="room">
+
+<img src="${room.image}">
+
+<div class="room-content">
+
+<h3>${room.name}</h3>
+
+<p>📍 ${room.location}</p>
+
+<p class="rating">⭐ ${room.rating}</p>
+
+<p class="price">
+₹${room.price.toLocaleString()}/night
+</p>
+
+<button class="btn"
+onclick="openBooking(${room.id})">
+Book Now
+</button>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+}
+
+
+/* =========================
+   ROOM FILTER
+========================= */
+
+function filterRooms(type){
+
+if(type==="All")
+renderRooms(rooms);
+
+else
+renderRooms(
+rooms.filter(r=>r.type===type)
+);
+
+}
+
+
+/* =========================
+   SEARCH
+========================= */
+
+function searchRooms(){
+
+let q=document.getElementById("search")
+.value.toLowerCase();
+
+let result=rooms.filter(r=>
+r.name.toLowerCase().includes(q) ||
+r.location.toLowerCase().includes(q) ||
+r.type.toLowerCase().includes(q)
+);
+
+showSection("rooms");
+
+renderRooms(result);
+
+}
+
+
+/* =========================
+   FAVORITES
+========================= */
+
+function toggleFavorite(id){
+
+if(favorites.includes(id))
+favorites=favorites.filter(x=>x!==id);
+
+else
+favorites.push(id);
+
+localStorage.setItem(
+"stayFavorites",
+JSON.stringify(favorites)
+);
+
+renderRooms(rooms);
+
+showToast("Favorite updated ❤️");
+
+}
+
+
+/* =========================
+   BOOKING
+========================= */
+
+function openBooking(id){
+
+if(!currentUser){
+
+alert("Please login first.");
+
+openLogin();
+
+return;
+
+}
+
+selectedRoom=rooms.find(r=>r.id===id);
+
+document.getElementById("selectedRoom")
+.innerText=selectedRoom.name;
+
+document.getElementById("bookingCheckIn")
+.value=document.getElementById("homeCheckIn").value;
+
+document.getElementById("bookingCheckOut")
+.value=document.getElementById("homeCheckOut").value;
+
+calculateBooking();
+
+document.getElementById("bookingModal")
+.style.display="flex";
+
+}
+
+
+function calculateBooking(){
+
+if(!selectedRoom)return;
+
+let start=new Date(
+document.getElementById("bookingCheckIn").value
+);
+
+let end=new Date(
+document.getElementById("bookingCheckOut").value
+);
+
+let nights=Math.ceil(
+(end-start)/(1000*60*60*24)
+);
+
+if(nights<=0){
+
+document.getElementById("bookingTotal")
+.innerText="0";
+
+return;
+
+}
+
+let total=nights*selectedRoom.price;
+
+document.getElementById("bookingTotal")
+.innerText=total.toLocaleString();
+
+}
+
+
+document.getElementById("bookingCheckIn")
+.addEventListener("change",calculateBooking);
+
+document.getElementById("bookingCheckOut")
+.addEventListener("change",calculateBooking);
+
+
+function confirmBooking(){
+
+let start=document.getElementById("bookingCheckIn").value;
+
+let end=document.getElementById("bookingCheckOut").value;
+
+let guests=document.getElementById("guests").value;
+
+let startDate=new Date(start);
+
+let endDate=new Date(end);
+
+let nights=Math.ceil(
+(endDate-startDate)/(1000*60*60*24)
+);
+
+if(nights<=0){
+
+alert("Invalid booking dates.");
+
+return;
+
+}
+
+let total=nights*selectedRoom.price;
+
+let booking={
+
+id:Date.now(),
+
+user:currentUser.email,
+
+room:selectedRoom.name,
+
+roomId:selectedRoom.id,
+
+checkIn:start,
+
+checkOut:end,
+
+guests:guests,
+
+nights:nights,
+
+total:total,
+
+status:"Confirmed",
+
+payment:"Paid"
+
+};
+
+bookings.push(booking);
+
+localStorage.setItem(
+"stayBookings",
+JSON.stringify(bookings)
+);
+
+closeModal("bookingModal");
+
+showToast("🎉 Room booked successfully!");
+
+renderBookings();
+
+updateAdmin();
+
+showSection("bookings");
+
+}
+
+
+/* =========================
+   FOOD
+========================= */
+
+function renderFood(list){
+
+let container=document.getElementById("foodList");
+
+container.innerHTML="";
+
+list.forEach(item=>{
+
+container.innerHTML+=`
+
+<div class="food-card">
+
+<img src="${item.image}">
+
+<div class="food-content">
+
+<h3>${item.name}</h3>
+
+<p>${item.category}</p>
+
+<p class="rating">
+⭐ ${item.rating}
+</p>
+
+<p class="price">
+₹${item.price}
+</p>
+
+<button class="btn"
+onclick="addToCart(${item.id})">
+🛒 Add to Cart
+</button>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+}
+
+
+function renderHomeFood(){
+
+let container=document.getElementById("homeFood");
+
+container.innerHTML="";
+
+food.slice(0,4).forEach(item=>{
+
+container.innerHTML+=`
+
+<div class="food-card">
+
+<img src="${item.image}">
+
+<div class="food-content">
+
+<h3>${item.name}</h3>
+
+<p class="price">
+₹${item.price}
+</p>
+
+<button class="btn"
+onclick="addToCart(${item.id})">
+Add to Cart
+</button>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+}
+
+
+function filterFood(category){
+
+if(category==="All")
+renderFood(food);
+
+else
+renderFood(
+food.filter(x=>x.category===category)
+);
+
+}
+
+
+/* =========================
+   CART
+========================= */
+
+function addToCart(id){
+
+let item=food.find(x=>x.id===id);
+
+let existing=cart.find(x=>x.id===id);
+
+if(existing)
+existing.quantity++;
+
+else
+cart.push({
+...item,
+quantity:1
+});
+
+localStorage.setItem(
+"stayCart",
+JSON.stringify(cart)
+);
+
+renderCart();
+
+document.getElementById("cartModal")
+.style.display="flex";
+
+showToast(item.name+" added to cart 🛒");
+
+}
+
+
+function renderCart(){
+
+let container=document.getElementById("cartItems");
+
+container.innerHTML="";
+
+let total=0;
+
+cart.forEach(item=>{
+
+let itemTotal=item.price*item.quantity;
+
+total+=itemTotal;
+
+container.innerHTML+=`
+
+<div class="card">
+
+<h3>${item.name}</h3>
+
+<p>₹${item.price}</p>
+
+<p>Quantity:
+<button onclick="changeQuantity(${item.id},-1)">−</button>
+
+${item.quantity}
+
+<button onclick="changeQuantity(${item.id},1)">+</button>
+</p>
+
+<p>
+₹${itemTotal}
+</p>
+
+</div>
+
+`;
+
+});
+
+document.getElementById("cartTotal")
+.innerText=total.toLocaleString();
+
+}
+
+
+function changeQuantity(id,change){
+
+let item=cart.find(x=>x.id===id);
+
+if(!item)return;
+
+item.quantity+=change;
+
+if(item.quantity<=0)
+cart=cart.filter(x=>x.id!==id);
+
+localStorage.setItem(
+"stayCart",
+JSON.stringify(cart)
+);
+
+renderCart();
+
+}
+
+
+function placeFoodOrder(){
+
+if(!currentUser){
+
+alert("Please login first.");
+
+closeModal("cartModal");
+
+openLogin();
+
+return;
+
+}
+
+if(cart.length===0){
+
+alert("Cart is empty.");
+
+return;
+
+}
+
+let total=cart.reduce(
+(sum,item)=>sum+(item.price*item.quantity),
+0
+);
+
+let order={
+
+id:Date.now(),
+
+user:currentUser.email,
+
+items:cart,
+
+total:total,
+
+status:"Preparing",
+
+date:new Date().toLocaleString()
+
+};
+
+foodOrders.push(order);
+
+localStorage.setItem(
+"stayFoodOrders",
+JSON.stringify(foodOrders)
+);
+
+cart=[];
+
+localStorage.setItem(
+"stayCart",
+JSON.stringify(cart)
+);
+
+closeModal("cartModal");
+
+showToast("🍽️ Food order placed!");
+
+renderBookings();
+
+updateAdmin();
+
+showSection("bookings");
+
+}
+
+
+/* =========================
+   BOOKINGS DISPLAY
+========================= */
+
+function renderBookings(){
+
+let bookingContainer=
+document.getElementById("bookingList");
+
+let orderContainer=
+document.getElementById("orderList");
+
+bookingContainer.innerHTML="";
+
+orderContainer.innerHTML="";
+
+if(!currentUser)return;
+
+let myBookings=
+bookings.filter(
+b=>b.user===currentUser.email
+);
+
+if(myBookings.length===0){
+
+bookingContainer.innerHTML=`
+<div class="card">
+<h3>No room bookings.</h3>
+<p>Book your first room!</p>
+</div>
+`;
+
+}
+
+myBookings.slice().reverse().forEach(b=>{
+
+bookingContainer.innerHTML+=`
+
+<div class="card">
+
+<h3>🏨 ${b.room}</h3>
+
+<p>📅 ${b.checkIn} → ${b.checkOut}</p>
+
+<p>👥 Guests: ${b.guests}</p>
+
+<p>🌙 Nights: ${b.nights}</p>
+
+<p>💳 Payment: ${b.payment}</p>
+
+<p>
+Status:
+<span class="status">
+${b.status}
+</span>
+</p>
+
+<h3>₹${b.total.toLocaleString()}</h3>
+
+${
+b.status!=="Cancelled"
+?
+`<button class="btn"
+onclick="cancelBooking(${b.id})">
+Cancel Booking
+</button>`
+:""
+}
+
+</div>
+
+`;
+
+});
+
+
+let myOrders=
+foodOrders.filter(
+o=>o.user===currentUser.email
+);
+
+if(myOrders.length===0){
+
+orderContainer.innerHTML=`
+<div class="card">
+<p>No food orders.</p>
+</div>
+`;
+
+}
+
+myOrders.slice().reverse().forEach(order=>{
+
+let items=order.items
+.map(x=>`${x.name} × ${x.quantity}`)
+.join(", ");
+
+orderContainer.innerHTML+=`
+
+<div class="card">
+
+<h3>🍽️ Food Order #${order.id}</h3>
+
+<p>${items}</p>
+
+<p>📅 ${order.date}</p>
+
+<p>
+Status:
+<span class="status">
+${order.status}
+</span>
+</p>
+
+<h3>₹${order.total}</h3>
+
+</div>
+
+`;
+
+});
+
+}
+
+
+function cancelBooking(id){
+
+if(!confirm("Cancel this booking?"))
+return;
+
+let b=bookings.find(x=>x.id===id);
+
+if(b)b.status="Cancelled";
+
+localStorage.setItem(
+"stayBookings",
+JSON.stringify(bookings)
+);
+
+renderBookings();
+
+updateAdmin();
+
+showToast("Booking cancelled.");
+
+}
+
+
+/* =========================
+   LOGIN
+========================= */
+
+function openLogin(){
+
+document.getElementById("loginModal")
+.style.display="flex";
+
+}
+
+
+function login(){
+
+let email=document.getElementById("loginEmail").value.trim();
+
+let password=document.getElementById("loginPassword").value;
+
+let user=users.find(
+u=>u.email===email &&
+u.password===password
+);
+
+if(!user){
+
+alert("Invalid email or password.");
+
+return;
+
+}
+
+currentUser=user;
+
+localStorage.setItem(
+"stayCurrentUser",
+JSON.stringify(user)
+);
+
+closeModal("loginModal");
+
+updateAuth();
+
+updateProfile();
+
+showToast("Welcome "+user.name+" 👋");
+
+}
+
+
+function signup(){
+
+let name=document.getElementById("signupName").value.trim();
+
+let email=document.getElementById("signupEmail").value.trim();
+
+let password=document.getElementById("signupPassword").value;
+
+if(!name||!email||!password){
+
+alert("Fill all fields.");
+
+return;
+
+}
+
+if(users.some(u=>u.email===email)){
+
+alert("Email already registered.");
+
+return;
+
+}
+
+let user={
+name:name,
+email:email,
+password:password
+};
+
+users.push(user);
+
+localStorage.setItem(
+"stayUsers",
+JSON.stringify(users)
+);
+
+currentUser=user;
+
+localStorage.setItem(
+"stayCurrentUser",
+JSON.stringify(user)
+);
+
+closeModal("signupModal");
+
+updateAuth();
+
+updateProfile();
+
+showToast("Account created successfully!");
+
+}
+
+
+function logout(){
+
+currentUser=null;
+
+localStorage.removeItem("stayCurrentUser");
+
+updateAuth();
+
+updateProfile();
+
+showSection("home");
+
+showToast("Logged out successfully.");
+
+}
+
+
+function updateAuth(){
+
+let btn=document.getElementById("authButton");
+
+if(currentUser){
+
+btn.innerText="Logout";
+
+btn.onclick=logout;
+
+}else{
+
+btn.innerText="Login";
+
+btn.onclick=openLogin;
+
+}
+
+}
+
+
+/* =========================
+   PROFILE
+========================= */
+
+function updateProfile(){
+
+if(!currentUser){
+
+document.getElementById("profileName")
+.innerText="Guest";
+
+document.getElementById("profileEmail")
+.innerText="Please login.";
+
+return;
+
+}
+
+document.getElementById("profileName")
+.innerText=currentUser.name;
+
+document.getElementById("profileEmail")
+.innerText=currentUser.email;
+
+}
+
+
+/* =========================
+   ADMIN
+========================= */
+
+function updateAdmin(){
+
+document.getElementById("totalRooms")
+.innerText=rooms.length;
+
+document.getElementById("totalUsers")
+.innerText=users.length;
+
+document.getElementById("totalBookings")
+.innerText=bookings.length;
+
+document.getElementById("totalOrders")
+.innerText=foodOrders.length;
+
+let revenue=0;
+
+bookings.forEach(b=>{
+
+if(b.status!=="Cancelled")
+revenue+=b.total;
+
+});
+
+foodOrders.forEach(o=>{
+revenue+=o.total;
+});
+
+document.getElementById("revenue")
+.innerText=revenue.toLocaleString();
+
+let container=
+document.getElementById("adminBookings");
+
+container.innerHTML="";
+
+bookings.slice(-5).reverse()
+.forEach(b=>{
+
+container.innerHTML+=`
+
+<div class="card">
+
+<h3>${b.room}</h3>
+
+<p>User: ${b.user}</p>
+
+<p>${b.checkIn} → ${b.checkOut}</p>
+
+<p>₹${b.total}</p>
+
+<span class="status">
+${b.status}
+</span>
+
+</div>
+
+`;
+
+});
+
+}
+
+
+/* =========================
+   NAVIGATION
+========================= */
+
+function showSection(section){
+
+let sections=[
+"home",
+"rooms",
+"food",
+"bookings",
+"profile",
+"admin"
+];
+
+sections.forEach(x=>{
+document.getElementById(x)
+.classList.add("hidden");
+});
+
+document.getElementById(section)
+.classList.remove("hidden");
+
+if(section==="bookings")
+renderBookings();
+
+if(section==="admin")
+updateAdmin();
+
+}
+
+
+/* =========================
+   DARK MODE
+========================= */
+
+function toggleDark(){
+
+document.body.classList.toggle("dark");
+
+localStorage.setItem(
+"stayDark",
+document.body.classList.contains("dark")
+);
+
+}
+
+
+/* =========================
+   MODALS
+========================= */
+
+function closeModal(id){
+
+document.getElementById(id)
+.style.display="none";
+
+}
+
+
+function switchSignup(){
+
+closeModal("loginModal");
+
+document.getElementById("signupModal")
+.style.display="flex";
+
+}
+
+
+/* =========================
+   TOAST
+========================= */
+
+function showToast(message){
+
+let toast=document.getElementById("toast");
+
+toast.innerText=message;
+
+toast.style.display="block";
+
+setTimeout(()=>{
+toast.style.display="none";
+},2500);
+
+}
+
+
+/* =========================
+   DARK MODE LOAD
+========================= */
+
+if(localStorage.getItem("stayDark")==="true")
+document.body.classList.add("dark");
+
+
+/* =========================
+   START
+========================= */
+
+initialize();
+
+</script>
+
+</body>
+</html>
